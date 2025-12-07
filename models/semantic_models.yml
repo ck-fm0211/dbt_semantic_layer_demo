@@ -1,0 +1,31 @@
+semantic_models:
+  - name: orders_semantic
+    description: "注文データのセマンティックモデル"
+    model: ref('orders')  # あなたが作った models/marts/orders.sql を参照
+    defaults:
+      agg_time_dimension: ordered_at
+    entities:
+      - name: order_id
+        type: primary
+      - name: user_id
+        type: foreign
+    dimensions:
+      - name: ordered_at
+        type: time
+        type_params:
+          time_granularity: day
+      - name: status
+        type: categorical
+    measures:
+      - name: revenue_sum
+        description: "売上金額の合計"
+        expr: revenue  # ordersテーブルにある revenue カラムを使用
+        agg: sum
+
+metrics:
+  - name: total_revenue
+    label: "売上合計"
+    description: "全期間の売上合計"
+    type: simple
+    type_params:
+      measure: revenue_sum
