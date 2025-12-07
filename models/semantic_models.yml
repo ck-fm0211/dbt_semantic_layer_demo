@@ -27,8 +27,9 @@ semantic_models:
     defaults:
       agg_time_dimension: date_day
     entities:
-      - name: date_day
+      - name: date_day_key    # 名前を変更（衝突回避）
         type: primary
+        expr: date_day        # 実体は date_day カラムであることを指定
     dimensions:
       - name: date_day
         type: time
