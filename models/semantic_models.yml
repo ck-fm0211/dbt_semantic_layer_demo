@@ -22,6 +22,16 @@ semantic_models:
         expr: revenue  # ordersテーブルにある revenue カラムを使用
         agg: sum
 
+  - name: metricflow_time_spine
+    model: ref('metricflow_time_spine')
+    defaults:
+      agg_time_dimension: date_day
+    dimensions:
+      - name: date_day
+        type: time
+        type_params:
+          time_granularity: day
+
 metrics:
   - name: total_revenue
     label: "売上合計"
@@ -29,3 +39,4 @@ metrics:
     type: simple
     type_params:
       measure: revenue_sum
+
