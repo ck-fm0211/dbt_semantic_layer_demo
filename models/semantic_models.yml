@@ -70,3 +70,15 @@ metrics:
     type: simple
     type_params:
       measure: revenue_sum
+  - name: revenue_mtd_comparison
+    label: "売上_前月比"
+    description: "売上の前月比較"
+    type: derived
+    type_params:
+      expr: (total_revenue - total_revenue_prev_month) / total_revenue_prev_month
+      metrics:
+        - name: total_revenue
+          alias: total_revenue
+        - name: total_revenue
+          offset_window: 1 month
+          alias: total_revenue_prev_month
