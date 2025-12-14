@@ -17,6 +17,7 @@ semantic_models:
         type: time
         type_params:
           time_granularity: day
+        expr: DATETIME(ordered_at)
       - name: status
         type: categorical
     measures:
