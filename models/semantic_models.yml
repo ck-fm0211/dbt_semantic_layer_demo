@@ -70,15 +70,16 @@ metrics:
     type: simple
     type_params:
       measure: revenue_sum
-  - name: revenue_mtd_comparison
-    label: "売上_前月比"
-    description: "売上の前月比較"
+  - name: revenue_mom_growth
+    label: "売上_前月比(MoM)"
+    description: "売上の前月比成長率"
     type: derived
     type_params:
-      expr: (total_revenue - total_revenue_prev_month) / total_revenue_prev_month
+      # 計算式でもエイリアス名を使う
+      expr: (current_rev - prev_rev) / prev_rev
       metrics:
         - name: total_revenue
-          alias: total_revenue
+          alias: current_rev  # total_revenue ではなくユニークな名前をつける
         - name: total_revenue
           offset_window: 1 month
-          alias: total_revenue_prev_month
+          alias: prev_rev     # ここは prev_rev とする
