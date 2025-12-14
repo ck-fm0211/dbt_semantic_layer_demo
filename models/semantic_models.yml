@@ -1,14 +1,17 @@
 semantic_models:
+  # --------------------------------------------------
+  # 1. Orders (Fact) - 既存のもの
+  # --------------------------------------------------
   - name: orders_semantic
     description: "注文データのセマンティックモデル"
-    model: ref('orders')  # あなたが作った models/marts/orders.sql を参照
+    model: ref('orders')
     defaults:
       agg_time_dimension: ordered_at
     entities:
       - name: order_id
         type: primary
       - name: user_id
-        type: foreign
+        type: foreign  # ★ここが結合キーになります
     dimensions:
       - name: ordered_at
         type: time
@@ -19,17 +22,41 @@ semantic_models:
     measures:
       - name: revenue_sum
         description: "売上金額の合計"
-        expr: revenue  # ordersテーブルにある revenue カラムを使用
+        expr: revenue
         agg: sum
 
+  # --------------------------------------------------
+  # 2. Users (Dimension) - 新規追加
+  # --------------------------------------------------
+  - name: users_semantic
+    description: "ユーザー属性データ"
+    model: ref('users') # さっき作ったMartsを参照
+    entities:
+      - name: user_id
+        type: primary  # ★ここがOrdersのForeignと結合されます
+        expr: user_id
+    dimensions:
+      - name: country
+        type: categorical
+        description: "国"
+      - name: age
+        type: categorical
+        description: "年齢"
+      - name: gender
+        type: categorical
+        description: "性別"
+
+  # --------------------------------------------------
+  # 3. Time Spine (必須)
+  # --------------------------------------------------
   - name: metricflow_time_spine
     model: ref('metricflow_time_spine')
     defaults:
       agg_time_dimension: date_day
     entities:
-      - name: date_day_key    # 名前を変更（衝突回避）
+      - name: date_day_key
         type: primary
-        expr: date_day        # 実体は date_day カラムであることを指定
+        expr: date_day
     dimensions:
       - name: date_day
         type: time
@@ -43,4 +70,3 @@ metrics:
     type: simple
     type_params:
       measure: revenue_sum
-
